@@ -1,0 +1,64 @@
+---
+bitbucket_token: "{{vault_bitbucket_token}}"
+bitbucket_url: "https://rnd-testbitbucket.intelerad.com"
+mercurial_url: "https://testforge.intelerad.com/hg"
+ev_latest_release_manifest_url: "https://testbuildrepo2.intelerad.com/modules/intelerad-enhancedviewer/release/intelerad-enhancedviewer.manifest.xml"
+artifactory_url: "https://rnd-testartifacts.intelerad.com/artifactory"
+artifactory_user: "build"
+artifactory_password: "{{vault_dev_artifactory_password}}"
+bu_release_repo: "intelerad-product-test-dist"
+bu_release_repo_path: "intelerad-product-test-dist/intelerad-product-test/intelerad-billinguploader/stable/"
+papa_release_yum_repo: "intelerad-products/intelerad-postgres-autotuning/prod/"
+papa_release_repo: "intelerad-products-test-dist"
+papa_release_repo_path: "intelerad-products-test-dist/intelerad-products-test/intelerad-postgres-autotuning/prod/"
+jenkins_atlas_autorelease_url: "https://rnd-testci.intelerad.com/job/IntelePACS/job/Atlas/job/Atlas-autorelease/buildWithParameters?token={{vault_dev_atlas_autorelease_api_token}}&dryRun=true"
+
+jira_url: "https://testjira.intelerad.com"
+# Testjira ReadOnly access
+jira_readonly_userid: "robot-bc-ro"
+jira_readonly_consumerkey: "consumerkey_robot-bc-ro-20210610"
+jira_readonly_accesstoken: "{{vault_dev_jira_readonly_accesstoken}}"
+jira_readonly_accesstokensecret: "{{vault_dev_jira_readonly_accesstokensecret}}"
+jira_readonly_keycert: "{{vault_dev_jira_readonly_keycert}}"
+# Testjira ReadWrite access
+jira_readwrite_userid: "robot-bc-rw"
+jira_readwrite_consumerkey: "consumerkey_robot-bc-rw"
+jira_readwrite_accesstoken: "{{vault_dev_jira_readwrite_accesstoken}}"
+jira_readwrite_accesstokensecret: "{{vault_dev_jira_readwrite_accesstokensecret}}"
+jira_readwrite_keycert: "{{vault_dev_jira_readwrite_keycert}}"
+
+# Atlassian credentials
+jira_culprit_userid: "bc-update-culprit-service"
+jira_culprit_consumerkey: "consumerkey_bc-culprit-service"
+jira_culprit_accesstoken: "{{vault_dev_jira_culprit_accesstoken}}"
+jira_culprit_accesstokensecret: "{{vault_dev_jira_culprit_accesstokensecret}}"
+jira_culprit_keycert: "{{vault_dev_jira_culprit_keycert}}"
+
+
+# Testforge MySQL Audit Events access
+mysql_audit_events_hostname: "testforge.intelerad.com"
+mysql_audit_events_db: "build"
+# The following 2 values are a copy of bc-configmgmt/ansible/roles/forge-centos7-specific/defaults/main.yml
+# Make sure you keep them with the same value.
+mysql_audit_events_userid: "aws_release"
+mysql_audit_events_password: "{{vault_dev_mysql_audit_events_password}}"
+
+buildweb_hostname: "testbuildweb.intelerad.com"
+iprp_buildweb_url: "https://testbuildweb.intelerad.com/"
+iprp_confluence_url: "https://rnd-testconfluence.intelerad.com/"
+iprp_confluence_f021_template_page_id: '24616138'
+iprp_confluence_f021_reg_qms_folder_page_id: '24616120'
+iprp_site_modules_product_keys: ["universalviewer", "billinguploader", "postgres-autotuning", "analytics-uploader",
+"sre-tools", "cluster", "intelerad-cluster-install-tools", "intelerad-sre-rfb", "intelerad-monitoring",
+"intelerad-universalviewer-desktop", "intelerad-universalviewer-service", "intelerad-server-validation-tool",
+"intelerad-ims-web-login", "dicom-wrapper-service", "intelerad-cloud-gateway", "swl"]
+qms_mailing_list: "buildcontrol-testing@intelerad.com"
+bc_mailing_list: "buildcontrol-testing@intelerad.com"
+
+jenkins_hostname: "rnd-ci.intelerad.com"
+
+bitbucket_rw: "{{vault_dev_bitbucket_rw}}"
+bbconf_confluence_db_rw: "{{vault_dev_bbconf_confluence_db_rw}}"
+
+# Slack webhook
+slack_webhook_url_buildcontrol: "{{vault_dev_slack_webhook_url_buildcontrol}}"

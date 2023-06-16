@@ -1,0 +1,39 @@
+FROM docker-upstream-rnd-artifacts.intelerad.com/centos:7
+
+ARG ansibleVersion=2.8.5
+ARG boto3Version=1.9.245
+ARG terraformVersion=0.12.31
+ARG cryptographyVersion=3.3.2
+ARG artifactoryHost=rnd-artifacts.intelerad.com
+
+RUN yum install --assumeyes unzip python3 sudo gnupg2 pinentry git epel-release
+# Once EPEL is installed, we can then get jq installed
+RUN yum install --assumeyes jq
+
+ENV PYPI_INDEX=https://${artifactoryHost}/artifactory/api/pypi/pypi-release/simple
+
+RUN pip3 install --no-cache-dir --disable-pip-version-check --index-url $PYPI_INDEX \
+        ansible==${ansibleVersion} \
+        boto3==${boto3Version} \
+        cryptography==${cryptographyVersion}
+
+ENV TERRAFORM_ZIPFILE=terraform_${terraformVersion}_linux_amd64.zip
+ENV TERRAFORM_URL=https://${artifactoryHost}/artifactory/generic-binaries-local/terraform/terraform_${terraformVersion}/${TERRAFORM_ZIPFILE}
+
+RUN cd /tmp/ \
+    && curl --silent --remote-name ${TERRAFORM_URL} \
+    && unzip ${TERRAFORM_ZIPFILE} \
+    && mv terraform /usr/bin/ \
+    && rm -f /tmp/${TERRAFORM_ZIPFILE}
+
+# this down here to not invalidate the cache if we just change the entrypoint
+
+ARG ENTRYPOINT_REV="f54dce15302"
+ARG ENTRYPOINT_URL="https://forge.intelerad.com/hg/docker-utils/raw-file/${ENTRYPOINT_REV}/entrypoint"
+
+ADD $ENTRYPOINT_URL /entrypoint
+RUN chmod 555 /entrypoint
+ENTRYPOINT ["sh", "/entrypoint"]
+
+ENV PATH="/usr/local/bin:$PATH"
+RUN echo 'PATH="/usr/local/bin:$PATH"; export PATH' >> /etc/profile.d/path.sh

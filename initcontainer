@@ -1,0 +1,39 @@
+#!/bin/sh
+
+if [ -z "$IMS_FORGE" ]; then
+    IMS_FORGE=forge.intelerad.com
+fi
+
+if [ "$EUID" -eq 0 ]; then
+    # for aws tooling
+    sudo -u \#$USER_ID ln -s $HOMEUSER/.aws /home/$USERNAME/.aws
+
+    # for Ansible
+    sudo -u \#$USER_ID ln -s $HOMEUSER/.ansible /home/$USERNAME/.ansible
+    sudo -u \#$USER_ID ln -s $HOMEUSER/.ansible.cfg /home/$USERNAME/.ansible.cfg
+    sudo -u \#$USER_ID ln -s $HOMEUSER/.ansible_galaxy /home/$USERNAME/.ansible_galaxy
+
+    # for push over ssh using ssh-keys and not plain password
+    sudo -u \#$USER_ID ln -s $HOMEUSER/.ssh /home/$USERNAME/.ssh
+
+    # for unlocking gpg keychain
+    sudo -u \#$USER_ID ln -s $HOMEUSER/.gnupg /home/$USERNAME/.gnupg
+
+    # for terraform cache
+    sudo -u \#$USER_ID ln -s $HOMEUSER/.terraform.d /home/$USERNAME/.terraform.d
+
+    # Allow us to become root
+    echo "$USERNAME ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/user
+
+    # Fixes for GPG
+    chown $USERNAME $(tty)
+    echo "export GPG_TTY=$(tty)" > /etc/profile.d/gpg.sh
+
+    # Provide a somewhat nicer dev environment
+    yum install --assumeyes vim
+
+    sudo -u \#$USER_ID /bin/bash
+else
+    echo "ERROR: need root permissions"
+    exit 1
+fi

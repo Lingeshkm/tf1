@@ -1,0 +1,17 @@
+ANSIBLE_VERSION=`ansible --version | head -1 | awk '{printf $2}'`
+ACCEPTED_VERSION=`echo $ANSIBLE_VERSION | egrep "2\.8\.."`
+if [ -z "$ACCEPTED_VERSION" ] ; then
+    printf "ERROR: You're not using the correct Ansible version.\n"
+    printf "       Are you sure you ran the script 'launchcontainer' ?\n"
+    exit 1
+fi
+
+AWS_ENV=$1
+
+shift;
+
+if [[ $AWS_ENV == "dev" || $AWS_ENV == "staging" || $AWS_ENV == "prod" ]]; then
+    ANSIBLE_STDOUT_CALLBACK=debug ANSIBLE_MAX_DIFF_SIZE=1044480 ansible-playbook site.yml --connection=local --inventory 127.0.0.1, --extra-vars=aws_env=${AWS_ENV} "$@"
+else
+    >&2 echo "ERROR: Invalid AWS_ENV param provided. Only dev/staging/prod supported"
+fi

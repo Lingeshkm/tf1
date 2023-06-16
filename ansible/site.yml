@@ -1,0 +1,198 @@
+---
+- hosts: all
+  become: false
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/bin/python3.6
+    release_backend_config_template: |
+      {
+        "bitbucket_token": "{{bitbucket_token}}",
+        "bitbucket_url": "{{bitbucket_url}}",
+        "mercurial_url": "{{mercurial_url}}",
+        "ev_latest_release_manifest_url": "{{ev_latest_release_manifest_url}}",
+        "artifactory_url": "{{artifactory_url}}",
+        "artifactory_user": "{{artifactory_user}}",
+        "artifactory_password": "{{artifactory_password}}",
+        "bu_release_repo": "{{bu_release_repo}}",
+        "bu_release_repo_path": "{{bu_release_repo_path}}",
+        "papa_release_yum_repo": "{{papa_release_yum_repo}}",
+        "papa_release_repo": "{{papa_release_repo}}",
+        "papa_release_repo_path": "{{papa_release_repo_path}}",
+        "jenkins_atlas_autorelease_url": "{{jenkins_atlas_autorelease_url}}",
+        "slack_webhook_url_buildcontrol": "{{slack_webhook_url_buildcontrol}}",
+      }
+    event_processor_template: |
+      {
+        "jira_readonly":
+        {
+          "url": "{{jira_url}}",
+          "userid": "{{jira_readonly_userid}}",
+          "consumerkey": "{{jira_readonly_consumerkey}}",
+          "accesstoken": "{{jira_readonly_accesstoken}}",
+          "accesstokensecret": "{{jira_readonly_accesstokensecret}}",
+          "keycert": "{{jira_readonly_keycert|b64encode}}"
+        },
+        "jira_readwrite":
+        {
+          "url": "{{jira_url}}",
+          "userid": "{{jira_readwrite_userid}}",
+          "consumerkey": "{{jira_readwrite_consumerkey}}",
+          "accesstoken": "{{jira_readwrite_accesstoken}}",
+          "accesstokensecret": "{{jira_readwrite_accesstokensecret}}",
+          "keycert": "{{jira_readwrite_keycert|b64encode}}"
+        },
+        "mysql_audit_events":
+        {
+          "hostname": "{{mysql_audit_events_hostname}}",
+          "database": "{{mysql_audit_events_db}}",
+          "userid": "{{mysql_audit_events_userid}}",
+          "password": "{{mysql_audit_events_password}}"
+        },
+        "buildweb":
+        {
+          "hostname": "{{buildweb_hostname}}"
+        }
+      }
+    bc_build_collector_config_template: |
+      {
+        "build_sources": [
+          { "name": "jenkins-rnd-ci",
+            "build_engine": "jenkins",
+            "url": "https://{{jenkins_hostname}}",
+            "source_configs": [
+               { "name": "buildweb",
+                 "repository": "bitbucket__BW__bc-buildweb",
+                 "product_key": "buildweb",
+                 "jenkins_job_regex": "^Build_Control/buildweb/bc-buildweb/v?\\d+\\.\\d+\\.\\d+$",
+                 "jenkins_job_branch_regex": "^v?\\d+\\.\\d+\\.\\d+$",
+                 "jenkins_policy_type": "standard_policy" },
+               { "name": "universalviewer",
+                 "repository": "bitbucket__EVT__universalviewer",
+                 "product_key": "universalviewer",
+                 "jenkins_job_regex": "^enhanced_viewer_team/EnhancedViewerTeam/universalviewer/v?\\d+\\.\\d+\\.\\d+$",
+                 "jenkins_job_branch_regex": "^v?\\d+\\.\\d+\\.\\d+$",
+                 "jenkins_policy_type": "build_json_policy" },
+               { "name": "postgres-autotuning",
+                 "repository": "bitbucket__ST1__postgres-autotuning",
+                 "product_key": "postgres-autotuning",
+                 "jenkins_job_regex": "^scrum-teams/scrum-team-1/postgres-autotuning/\\d+\\.\\d+\\.\\d+$",
+                 "jenkins_job_branch_regex": "^\\d+\\.\\d+\\.\\d+$",
+                 "jenkins_policy_type": "build_json_policy" }
+            ]
+          }
+        ]
+      }
+    iprp_template: |
+        {
+          "IPRP_CODE_FREEZE_REPOS": ["intelepacs/master", "atlas", "cds"],
+          "IPRP_ELSA_API": "{{iprp_elsa_api}}",
+          "IPRP_BUILDWEB": "{{iprp_buildweb_url}}",
+          "IPRP_CONFLUENCE_URL": "{{iprp_confluence_url}}",
+          "IPRP_CONFLUENCE_USERNAME": "robot-bc-rw",
+          "IPRP_CONFLUENCE_PASSWORD": "{{vault_prod_bc_confluence_automated_password}}",
+          "IPRP_CONFLUENCE_F021_TEMPLATE_PAGE_ID": "{{iprp_confluence_f021_template_page_id}}",
+          "IPRP_CONFLUENCE_F021_REG_QMS_FOLDER_PAGE_ID": "{{iprp_confluence_f021_reg_qms_folder_page_id}}",
+          "IPRP_SITE_MODULES_PRODUCT_KEYS": {{iprp_site_modules_product_keys}},
+          "QMS_MAILING_LIST": "{{qms_mailing_list}}",
+          "BC_MAILING_LIST": "{{bc_mailing_list}}",
+        }
+    atlassian_template: |
+      {
+        "jira_culprit":
+        {
+          "url": "{{jira_url}}",
+          "userid": "{{jira_culprit_userid}}",
+          "consumerkey": "{{jira_culprit_consumerkey}}",
+          "accesstoken": "{{jira_culprit_accesstoken}}",
+          "accesstokensecret": "{{jira_culprit_accesstokensecret}}",
+          "keycert": "{{jira_culprit_keycert|b64encode}}"
+        }
+      }
+
+  tasks:
+  - name: Include secret vars
+    include_vars:
+      file: vault.yml
+
+  - name: Include vars from bc-dev or bc-staging
+    include_vars:
+      file: vars-dev-or-staging.yml
+    when: aws_env == 'dev' or aws_env == 'staging'
+
+  - name: Include vars from bc-dev
+    include_vars:
+      file: vars-dev.yml
+    when: aws_env == 'dev'
+
+  - name: Include vars from bc-staging
+    include_vars:
+      file: vars-staging.yml
+    when: aws_env == 'staging'
+
+  - name: Include vars from bc-prod
+    include_vars:
+      file: vars-prod.yml
+    when: aws_env == 'prod'
+
+  - name: Add Release Backend configuration within AWS Secrets Manager
+    aws_secret:
+      name: "/app/{{aws_env}}/release_backend_config"
+      profile: "bc-{{aws_env}}"
+      state: present
+      secret_type: 'string'
+      secret: "{{release_backend_config_template|to_nice_json}}"
+      description: "Configuration for AppSync release backend lambda functions"
+
+  - name: Add Event Processor Access within AWS Secrets Manager
+    aws_secret:
+      name: "/app/{{aws_env}}/event_processor"
+      profile: "bc-{{aws_env}}"
+      state: present
+      secret_type: 'string'
+      secret: "{{event_processor_template|to_nice_json}}"
+      description: "Event Processor access credential"
+
+  - name: Add Build Collector config within AWS Secrets Manager
+    aws_secret:
+      name: "/app/{{aws_env}}/bc-build-collector-config"
+      profile: "bc-{{aws_env}}"
+      state: present
+      secret_type: 'string'
+      secret: "{{bc_build_collector_config_template|to_nice_json}}"
+      description: "Build Collector configuration"
+
+  - name: Add Bitbucket_rw PSQL password within AWS Secrets Manager
+    aws_secret:
+      name: "/app/{{aws_env}}/bitbucket_rw"
+      profile: "bc-{{aws_env}}"
+      state: present
+      secret_type: 'string'
+      secret: "{{bitbucket_rw}}"
+      description: "PostgreSQL password for bitbucket backend"
+
+  - name: Add bbconf_confluence_db_rw PSQL password within AWS Secrets Manager
+    aws_secret:
+      name: "/app/{{aws_env}}/bbconf_confluence_db_rw"
+      profile: "bc-{{aws_env}}"
+      state: present
+      secret_type: 'string'
+      secret: "{{bbconf_confluence_db_rw}}"
+      description: "PostgreSQL password for confluenceuser backend"
+
+  - name: Add IPRP creds within AWS Secrets Manager
+    aws_secret:
+      name: "/app/{{aws_env}}/iprp"
+      profile: "bc-{{aws_env}}"
+      state: present
+      secret_type: 'string'
+      secret: "{{iprp_template|to_nice_json}}"
+      description: "IPRP creds"
+
+  - name: Add Atlassian credentials within AWS Secrets Manager
+    aws_secret:
+      name: "/base_infra/{{aws_env}}/atlassian"
+      profile: "bc-{{aws_env}}"
+      state: present
+      secret_type: 'string'
+      secret: "{{atlassian_template|to_nice_json}}"
+      description: "Atlassian credentials"

@@ -1,0 +1,177 @@
+{
+    "widgets": [
+        {
+            "type": "metric",
+            "x": 0,
+            "y": 6,
+            "width": 6,
+            "height": 6,
+            "properties": {
+                "metrics": [
+                    [ { "expression": "SEARCH('{AWS/RDS,DBInstanceIdentifier} MetricName=\"CPUCreditBalance\"', 'Average', 300)", "label": "RDS", "id": "e2" } ],
+                    [ { "expression": "SEARCH('{AWS/EC2,InstanceId} MetricName=\"CPUCreditBalance\"', 'Average', 300)", "label": "EC2", "id": "e1" } ]
+                ],
+                "view": "timeSeries",
+                "stacked": false,
+                "region": "us-east-2",
+                "title": "CPU Credit Balances",
+                "period": 300,
+                "yAxis": {
+                    "left": {
+                        "min": 0,
+                        "showUnits": false
+                    }
+                },
+                "legend": {
+                    "position": "hidden"
+                }
+            }
+        },
+        {
+            "type": "metric",
+            "x": 12,
+            "y": 6,
+            "width": 6,
+            "height": 6,
+            "properties": {
+                "metrics": [
+                    [ { "expression": "SEARCH('{CWAgent,AutoScalingGroupName} MetricName=\"mem_used_percent\"', 'Average', 300)", "id": "mem_used", "label": "EC2" } ]
+                ],
+                "view": "timeSeries",
+                "stacked": false,
+                "region": "us-east-2",
+                "title": "Mem Utilization",
+                "yAxis": {
+                    "left": {
+                        "min": 0,
+                        "max": 100,
+                        "showUnits": false
+                    }
+                },
+                "legend": {
+                    "position": "hidden"
+                },
+                "period": 300
+            }
+        },
+        {
+            "type": "metric",
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 6,
+            "properties": {
+                "view": "timeSeries",
+                "stacked": false,
+                "title": "Lambda Stats",
+                "metrics": [
+                    [ "AWS/Lambda", "ConcurrentExecutions" ],
+                    [ ".", "Errors" ],
+                    [ ".", "Invocations" ],
+                    [ ".", "Throttles" ],
+                    [ ".", "UnreservedConcurrentExecutions" ]
+                ],
+                "region": "us-east-2"
+            }
+        },
+        {
+            "type": "metric",
+            "x": 12,
+            "y": 0,
+            "width": 6,
+            "height": 6,
+            "properties": {
+                "metrics": [
+                    [ { "expression": "SEARCH('{AWS/Lambda,FunctionName} MetricName=\"Duration\"', 'Maximum', 300)", "id": "e1", "label": "${LABEL} [max: ${MAX}]" } ]
+                ],
+                "view": "timeSeries",
+                "stacked": false,
+                "title": "Lambda MAX Durations",
+                "region": "us-east-2",
+                "yAxis": {
+                    "left": {
+                        "showUnits": false,
+                        "min": 0,
+                        "label": "Millis"
+                    }
+                },
+                "period": 300
+            }
+        },
+        {
+            "type": "metric",
+            "x": 6,
+            "y": 0,
+            "width": 6,
+            "height": 6,
+            "properties": {
+                "metrics": [
+                    [ { "expression": "SEARCH('{AWS/Lambda,FunctionName} MetricName=\"Duration\"', 'Average', 300)", "id": "e1" } ]
+                ],
+                "view": "timeSeries",
+                "stacked": false,
+                "title": "Lambda AVG Durations",
+                "region": "us-east-2",
+                "yAxis": {
+                    "left": {
+                        "showUnits": false,
+                        "min": 0,
+                        "label": "Millis"
+                    }
+                }
+            }
+        },
+        {
+            "type": "metric",
+            "x": 18,
+            "y": 0,
+            "width": 6,
+            "height": 6,
+            "properties": {
+                "metrics": [
+                    [ { "expression": "SEARCH('{AWS/EBS,VolumeId} MetricName=\"BurstBalance\"', 'Average', 300)", "id": "e1" } ]
+                ],
+                "view": "timeSeries",
+                "stacked": false,
+                "title": "EBS Burst Balance",
+                "region": "us-east-2",
+                "yAxis": {
+                    "left": {
+                        "min": 0,
+                        "showUnits": false
+                    }
+                },
+                "legend": {
+                    "position": "hidden"
+                }
+            }
+        },
+        {
+            "type": "metric",
+            "x": 6,
+            "y": 6,
+            "width": 6,
+            "height": 6,
+            "properties": {
+                "metrics": [
+                    [ { "expression": "SEARCH('{AWS/EC2,InstanceId} MetricName=\"CPUUtilization\"', 'Average', 300)", "id": "e1", "label": "EC2" } ],
+                    [ { "expression": "SEARCH('{AWS/RDS,DBInstanceIdentifier} MetricName=\"CPUUtilization\"', 'Average', 300)", "label": "RDS", "id": "e2" } ]
+                ],
+                "view": "timeSeries",
+                "stacked": false,
+                "region": "us-east-2",
+                "title": "CPU % Utilization",
+                "yAxis": {
+                    "left": {
+                        "min": 0,
+                        "max": 100,
+                        "showUnits": false
+                    }
+                },
+                "legend": {
+                    "position": "hidden"
+                }
+            }
+        }
+    ]
+}

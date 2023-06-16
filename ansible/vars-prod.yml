@@ -1,0 +1,65 @@
+---
+bitbucket_token: "{{vault_bitbucket_token}}"
+bitbucket_url: "https://rnd-bitbucket.intelerad.com"
+mercurial_url: "https://forge.intelerad.com/hg"
+ev_latest_release_manifest_url: "https://buildrepo.intelerad.com/modules/intelerad-enhancedviewer/release/intelerad-enhancedviewer.manifest.xml"
+artifactory_url: "https://rnd-artifacts.intelerad.com/artifactory"
+artifactory_user: "bcrelease"
+artifactory_password: "{{vault_prod_artifactory_password}}"
+bu_release_repo: "intelerad-product-bu"
+bu_release_repo_path: "intelerad-product-bu/intelerad-product/intelerad-billinguploader/stable/"
+papa_release_yum_repo: "intelerad-products/intelerad-postgres-autotuning/prod/"
+papa_release_repo: "intelerad-products-dist"
+papa_release_repo_path: "intelerad-products-dist/intelerad-products/intelerad-postgres-autotuning/prod/"
+jenkins_atlas_autorelease_url: "https://rnd-ci.intelerad.com/job/IntelePACS/job/Atlas/job/Atlas-autorelease/buildWithParameters?token={{vault_prod_atlas_autorelease_api_token}}"
+
+jira_url: "https://jira.intelerad.com"
+# Jira ReadOnly access
+jira_readonly_userid: "robot-bc-ro"
+jira_readonly_consumerkey: "consumerkey_robot-bc-ro-20210610"
+jira_readonly_accesstoken: "{{vault_prod_jira_readonly_accesstoken}}"
+jira_readonly_accesstokensecret: "{{vault_prod_jira_readonly_accesstokensecret}}"
+jira_readonly_keycert: "{{vault_prod_jira_readonly_keycert}}"
+# Jira ReadWrite access
+jira_readwrite_userid: "robot-bc-rw"
+jira_readwrite_consumerkey: "consumerkey_robot-bc-rw"
+jira_readwrite_accesstoken: "{{vault_prod_jira_readwrite_accesstoken}}"
+jira_readwrite_accesstokensecret: "{{vault_prod_jira_readwrite_accesstokensecret}}"
+jira_readwrite_keycert: "{{vault_prod_jira_readwrite_keycert}}"
+
+# Atlassian credentials
+jira_culprit_userid: "bc-update-culprit-service"
+jira_culprit_consumerkey: "consumerkey_bc-culprit-service"
+jira_culprit_accesstoken: "{{vault_prod_jira_culprit_accesstoken}}"
+jira_culprit_accesstokensecret: "{{vault_prod_jira_culprit_accesstokensecret}}"
+jira_culprit_keycert: "{{vault_prod_jira_culprit_keycert}}"
+
+# Forge MySQL Audit Events access
+mysql_audit_events_hostname: "forge.intelerad.com"
+mysql_audit_events_db: "build"
+mysql_audit_events_userid: "aws_release"
+mysql_audit_events_password: "{{vault_prod_mysql_audit_events_password}}"
+
+buildweb_hostname: "buildweb.intelerad.com"
+iprp_buildweb_url: "https://buildweb.intelerad.com/"
+iprp_confluence_url: 'https://rnd-confluence.intelerad.com/'
+iprp_confluence_f021_template_page_id: '24616138'
+iprp_confluence_f021_reg_qms_folder_page_id: '24616120'
+iprp_site_modules_product_keys: ["universalviewer", "billinguploader", "postgres-autotuning", "analytics-uploader",
+"sre-tools", "cluster", "intelerad-cluster-install-tools", "intelerad-sre-rfb", "intelerad-monitoring",
+"intelerad-universalviewer-desktop", "intelerad-universalviewer-service", "intelerad-server-validation-tool",
+"intelerad-ims-web-login", "dicom-wrapper-service", "intelerad-cloud-gateway", "swl"]
+
+jenkins_hostname: "rnd-ci.intelerad.com"
+
+bitbucket_rw: "{{vault_prod_bitbucket_rw}}"
+bbconf_confluence_db_rw: "{{vault_prod_bbconf_confluence_db_rw}}"
+
+# IPRP django creds
+iprp_elsa_api: 'https://forge.intelerad.com/bc-elsa/'
+iprp_confluence_password: '{{vault_prod_iprp_confluence_password}}'
+qms_mailing_list: "qualitymanagement@intelerad.com"
+bc_mailing_list: "buildcontrol-notification@intelerad.com"
+
+# Slack webhook
+slack_webhook_url_buildcontrol: "{{vault_prod_slack_webhook_url_buildcontrol}}"

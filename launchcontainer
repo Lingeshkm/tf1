@@ -1,0 +1,32 @@
+#!/bin/sh -xe
+
+IMAGE_NAME="bc-aws-infra-build"
+IMAGE_TAG="latest"
+BUILD_ARGS=`grep additionalBuildArgs Jenkinsfile  | awk '{ for (i=3; i<=NF; i++) printf("%s ",$i) }END{ print"" }' | tr -d \'`
+
+docker build $BUILD_ARGS --file build/Dockerfile.build --tag ${IMAGE_NAME}:${IMAGE_TAG} build
+
+CURRENT_DIR="`pwd`"
+cd "`dirname "$0"`"
+THIS_DIR="`pwd`"
+cd "$CURRENT_DIR"
+
+THIS_DIR_IN_CONTAINER="`echo "$THIS_DIR"|sed "s@$HOME@/homeuser@"`"
+BUILDOUT_DIR="$THIS_DIR/build"
+LAUNCHER_SCRIPT="$BUILDOUT_DIR/launchcontainer"
+
+if [ -z "$IMS_FORGE" ]; then
+    IMS_FORGE=forge.intelerad.com
+fi
+
+if [ -z "$LAUNCHER_URL" ]; then
+    LAUNCHER_URL="http://$IMS_FORGE/hg/docker-utils/raw-file/default/launchcontainer"
+fi
+
+mkdir -p $BUILDOUT_DIR
+wget $LAUNCHER_URL -O $LAUNCHER_SCRIPT
+chmod a+x $LAUNCHER_SCRIPT
+
+# The /run/user mount is for gpg-agents
+DOCKER_RUN_OPTS="$DOCKER_RUN_OPTS --workdir $THIS_DIR_IN_CONTAINER --env INIT_SCRIPT=$THIS_DIR_IN_CONTAINER/initcontainer -v /run/user/$(id -u)/:/run/user/$(id -u)/:ro" \
+    $LAUNCHER_SCRIPT --image $IMAGE_NAME:$IMAGE_TAG "$@"
